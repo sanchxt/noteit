@@ -60,7 +60,8 @@ export const NotesList = () => {
   };
 
   const renderItem = ({ item }: { item: Note }) => (
-    <View
+    <TouchableOpacity
+      onPress={() => navigation.navigate('UpdateNote', { note: item })}
       className={`p-4 rounded-lg mb-3 border ${
         theme === 'light'
           ? 'bg-light-background border-light-border'
@@ -94,9 +95,13 @@ export const NotesList = () => {
           {new Date(item.timestamp).toLocaleDateString()}
         </Text>
       </View>
+
       <TouchableOpacity
         className="absolute top-2 right-2 p-2"
-        onPress={() => dispatch(toggleNoteSelection(item.id))}>
+        onPress={e => {
+          e.stopPropagation();
+          dispatch(toggleNoteSelection(item.id));
+        }}>
         <Icon
           name={
             selectedNotes.includes(item.id)
@@ -111,7 +116,7 @@ export const NotesList = () => {
           }
         />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderHiddenItem = ({ item }: { item: Note }) => (
@@ -155,19 +160,6 @@ export const NotesList = () => {
       className={`flex-1 ${
         theme === 'light' ? 'bg-light-background' : 'bg-dark-background'
       }`}>
-      {/* theme toggle btn */}
-      <TouchableOpacity
-        className={`absolute top-4 right-4 z-10 p-2 rounded-full ${
-          theme === 'light' ? 'bg-light-surface' : 'bg-dark-surface'
-        }`}
-        onPress={() => dispatch(toggleTheme())}>
-        <Icon
-          name={theme === 'light' ? 'moon' : 'sunny'}
-          size={24}
-          color={theme === 'light' ? '#007AFF' : '#0A84FF'}
-        />
-      </TouchableOpacity>
-
       {selectedNotes.length > 0 && (
         <View
           className={`flex-row justify-between items-center p-4 border-b ${
@@ -200,6 +192,11 @@ export const NotesList = () => {
         rightOpenValue={-75}
         disableRightSwipe
         keyExtractor={item => item.id}
+        closeOnRowPress={true}
+        closeOnRowBeginSwipe={true}
+        previewRowKey={'0'}
+        previewOpenValue={-40}
+        previewOpenDelay={1000}
         contentContainerStyle={
           notes.length === 0 ? { flexGrow: 1 } : { padding: 16 }
         }

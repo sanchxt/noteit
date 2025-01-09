@@ -43,6 +43,16 @@ export const deleteBatchNotes = createAsyncThunk(
   },
 );
 
+export const updateNote = createAsyncThunk(
+  'notes/updateNote',
+  async (updatedNote: Note, { getState, dispatch }) => {
+    dispatch(modifyNote(updatedNote));
+    const state = getState() as { notes: NotesState };
+    await saveNotesToStorage(state.notes.notes, 'update');
+    return updatedNote;
+  },
+);
+
 const initialState: NotesState = {
   notes: [],
   loading: false,
@@ -78,6 +88,18 @@ const notesSlice = createSlice({
     clearSelectedNotes: state => {
       state.selectedNotes = [];
     },
+    modifyNote: (state, action: PayloadAction<Note>) => {
+      const index = state.notes.findIndex(
+        note => note.id === action.payload.id,
+      );
+      if (index !== -1) {
+        state.notes[index] = {
+          ...state.notes[index],
+          ...action.payload,
+          timestamp: new Date().toISOString(),
+        };
+      }
+    },
   },
   extraReducers: builder => {
     builder
@@ -102,5 +124,6 @@ export const {
   removeMultipleNotes,
   toggleNoteSelection,
   clearSelectedNotes,
+  modifyNote,
 } = notesSlice.actions;
 export default notesSlice.reducer;

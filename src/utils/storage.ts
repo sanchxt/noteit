@@ -1,11 +1,10 @@
-// src/utils/storage.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import type { Note } from '../types/note';
 
 const NOTES_STORAGE_KEY = '1922578';
 
-type OperationType = 'save' | 'delete' | 'batchDelete';
+type OperationType = 'save' | 'delete' | 'batchDelete' | 'update';
 
 const showSuccessToast = (operation: OperationType) => {
   const messages = {
@@ -13,6 +12,8 @@ const showSuccessToast = (operation: OperationType) => {
     delete: 'Note deleted successfully',
     batchDelete: 'Note(s) deleted successfully',
   };
+
+  if (operation === 'update') return;
 
   Toast.show({
     type: 'success',
