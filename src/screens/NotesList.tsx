@@ -1,19 +1,19 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { toggleTheme } from '../store/slices/themeSlice';
-import type { NotesListNavigationProp } from '../types/navigation';
-import type { RootState } from '../store/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+
 import type { Note } from '../types/note';
+import type { RootState, AppDispatch } from '../store/store';
+import type { NotesListNavigationProp } from '../types/navigation';
 import {
   deleteBatchNotes,
   deleteNote,
   toggleNoteSelection,
 } from '../store/slices/notesSlice';
-import type { AppDispatch } from '../store/store';
+import Markdown from 'react-native-markdown-display';
 
 export const NotesList = () => {
   const navigation = useNavigation<NotesListNavigationProp>();
@@ -77,7 +77,7 @@ export const NotesList = () => {
           numberOfLines={1}>
           {item.title || 'Untitled'}
         </Text>
-        <Text
+        {/* <Text
           className={`text-sm mb-2 ${
             theme === 'light'
               ? 'text-light-text-secondary'
@@ -85,9 +85,54 @@ export const NotesList = () => {
           }`}
           numberOfLines={2}>
           {item.content}
-        </Text>
+        </Text> */}
+        <View className="h-12 overflow-hidden whitespace-nowrap text-ellipsis">
+          <Markdown
+            style={{
+              body: {
+                color: theme === 'light' ? '#666' : '#ebebf5',
+              },
+              heading1: {
+                fontSize: 20,
+                fontWeight: 'bold',
+              },
+              heading2: {
+                fontSize: 18,
+                fontWeight: 'bold',
+              },
+              paragraph: {
+                fontSize: 14,
+              },
+              link: {
+                color: theme === 'light' ? '#007aff' : '#0a84ff',
+              },
+              code_inline: {
+                backgroundColor: theme === 'light' ? '#F8F9FA' : '#1E1E1E',
+                padding: 4,
+                borderRadius: 4,
+                color: theme === 'light' ? '#000' : '#e4e4e4',
+                fontFamily: 'monospace',
+              },
+              code_block: {
+                backgroundColor: theme === 'light' ? '#F8F9FA' : '#1E1E1E',
+                padding: 8,
+                borderRadius: 4,
+                marginVertical: 8,
+                color: theme === 'light' ? '#000' : '#e4e4e4',
+                fontFamily: 'monospace',
+              },
+              fence: {
+                backgroundColor: theme === 'light' ? '#f8f9fa' : '#1e1e1e',
+                borderRadius: 4,
+                color: theme === 'light' ? '#000' : '#e4e4e4',
+                fontFamily: 'monospace',
+              },
+            }}>
+            {item.content}
+          </Markdown>
+        </View>
         <Text
-          className={`text-xs ${
+          className={`text-xs pt-3 ${
             theme === 'light'
               ? 'text-light-text-tertiary'
               : 'text-dark-text-tertiary'
